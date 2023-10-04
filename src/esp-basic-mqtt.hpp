@@ -88,15 +88,15 @@ class BasicMqtt {
 	void publish(const char* topic, const char* payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, std::string payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, String payload, uint8_t qos = QoS0, bool retain = false);
-	void publish(const char* topic, int8_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (int)payload, qos, retain); };
-	void publish(const char* topic, int16_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (int)payload, qos, retain); };
-	void publish(const char* topic, int payload, uint8_t qos = QoS0, bool retain = false);    // int32_t
-	void publish(const char* topic, long payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (int)payload, qos, retain); };
+	void publish(const char* topic, int8_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (int32_t)payload, qos, retain); };
+	void publish(const char* topic, int16_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (int32_t)payload, qos, retain); };
+	void publish(const char* topic, int32_t payload, uint8_t qos = QoS0, bool retain = false);    // int
+	void publish(const char* topic, long payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, int64_t payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, uint8_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (uint32_t)payload, qos, retain); };
 	void publish(const char* topic, uint16_t payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (uint32_t)payload, qos, retain); };
 	void publish(const char* topic, uint32_t payload, uint8_t qos = QoS0, bool retain = false);
-	void publish(const char* topic, u_long payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, (uint32_t)payload, qos, retain); };
+	void publish(const char* topic, u_long payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, uint64_t payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, float payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, payload, 3, 2, qos, retain); };
 	void publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos = QoS0, bool retain = false);

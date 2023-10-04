@@ -197,10 +197,24 @@ void BasicMqtt::publish(const char* topic, int32_t payload, uint8_t qos, bool re
 		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
 }
+void BasicMqtt::publish(const char* topic, long payload, uint8_t qos, bool retain) {
+	if (_connected) {
+		char numberBuffer[12];
+		ltoa(payload, numberBuffer, 10);
+		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+	}
+}
 void BasicMqtt::publish(const char* topic, uint32_t payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[12];
 		utoa(payload, numberBuffer, 10);
+		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+	}
+}
+void BasicMqtt::publish(const char* topic, u_long payload, uint8_t qos, bool retain) {
+	if (_connected) {
+		char numberBuffer[12];
+		ultoa(payload, numberBuffer, 10);
 		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
 }
