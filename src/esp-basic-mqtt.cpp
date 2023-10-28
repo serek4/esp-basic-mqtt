@@ -152,11 +152,9 @@ void BasicMqtt::reconnect() {
 	});
 }
 void BasicMqtt::disconnect() {
-	if (_shouldBeConnected) {
-		BasicMqtt::_shouldBeConnected = false;
-		_clientMqtt.disconnect();
-		_mqttReconnectTimer.detach();
-	}
+	BasicMqtt::_shouldBeConnected = false;
+	if (_clientMqtt.connected()) { _clientMqtt.disconnect(); }
+	_mqttReconnectTimer.detach();
 }
 void BasicMqtt::onConnect(const OnConnect& handler) {
 	_onConnectHandlers.push_back(handler);
@@ -325,7 +323,8 @@ void BasicMqtt::_onDisconnect(int8_t reason) {
 		    (String) "MQTT disconnected [" + String(_MQTTerror[(reason < 0) ? 24 : reason]) + (reason < 0 ? "(" + String(reason, 10) + ")]" : "]"));
 	}
 	_connected = false;
-	if (_shouldBeConnected) {
+	if (_clientMqtt.connected()) { _clientMqtt.close(); }    // make sure we are really disconnected
+	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
 		_mqttReconnectTimer.attach(_keepalive * PANGO_POLL_RATE, []() { connect(); });
 	}
 	for (const auto& handler : _onDisconnectHandlers) handler(reason);
