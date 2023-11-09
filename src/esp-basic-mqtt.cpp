@@ -162,6 +162,9 @@ void BasicMqtt::onConnect(const OnConnect& handler) {
 void BasicMqtt::onMessage(const OnMessage& handler) {
 	_onMessageHandlers.push_back(handler);
 }
+void BasicMqtt::onError(const OnError& handler) {
+	_onErrorHandlers.push_back(handler);
+}
 void BasicMqtt::onDisconnect(const OnDisconnect& handler) {
 	_onDisconnectHandlers.push_back(handler);
 }
@@ -262,6 +265,9 @@ void BasicMqtt::setup() {
 		_onMessage(topic, buf);
 		free(buf);    //* DO NOT FORGET TO DO THIS!
 	});
+	_clientMqtt.onMqttError([&](uint8_t e, uint32_t info) {
+		_onError(e, info);
+	});
 	_clientMqtt.onMqttDisconnect([&](int8_t reason) {
 		_onDisconnect(reason);
 	});
@@ -314,6 +320,16 @@ void BasicMqtt::_onMessage(const char* _topic, const char* _payload) {
 		return;
 	}
 	for (const auto& handler : _onMessageHandlers) handler(_topic, _payload);
+}
+void BasicMqtt::_onError(uint8_t error, uint32_t info) {
+	if (_logger != nullptr) {
+		(*_logger)(
+		    "mqtt",
+		    (String) "MQTT error [" + String(_MQTTerror[error < 0 ? 24 : error])
+		        + (error < 0 ? "(" + String(error, 10) + ")]" : "]")
+		        + " error info = " + _clientMqtt.stateToString() + "(" + String(info, 10) + ")");
+	}
+	for (const auto& handler : _onErrorHandlers) handler(error, info);
 }
 void BasicMqtt::_onDisconnect(int8_t reason) {
 	BASIC_MQTT_PRINTLN("MQTT disconnected: [" + String(reason, 10) + "]!");

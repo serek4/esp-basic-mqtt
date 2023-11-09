@@ -41,6 +41,7 @@ class BasicMqtt {
 	typedef std::vector<std::string> Command;
 	typedef std::function<void()> OnConnect;
 	typedef std::function<void(const char* _topic, const char* _payload)> OnMessage;
+	typedef std::function<void(uint8_t error, uint32_t info)> OnError;
 	typedef std::function<void(int8_t reason)> OnDisconnect;
 	typedef std::function<bool(Command mqttCommand)> OnCommand;
 	struct Config {
@@ -82,6 +83,7 @@ class BasicMqtt {
 	bool waitForConnection(int waitTime = 10);
 	void onConnect(const OnConnect& handler);
 	void onMessage(const OnMessage& handler);
+	void onError(const OnError& handler);
 	void onDisconnect(const OnDisconnect& handler);
 	void commands(const OnCommand& handler);
 	void publish(const char* topic, const char* payload, uint8_t qos = QoS0, bool retain = false);
@@ -129,10 +131,12 @@ class BasicMqtt {
 	    "X_INVALID_LENGTH", "NO_SERVER_DETAILS", "NOT_ENOUGH_MEMORY", "TCP_ERROR"};
 	std::vector<OnConnect> _onConnectHandlers;
 	std::vector<OnMessage> _onMessageHandlers;
+	std::vector<OnError> _onErrorHandlers;
 	std::vector<OnDisconnect> _onDisconnectHandlers;
 	std::vector<OnCommand> _mqttCommandsHandlers;
 	void _onConnect();
 	void _onMessage(const char* _topic, const char* _payload);
+	void _onError(uint8_t error, uint32_t info);
 	void _onDisconnect(int8_t reason);
 	bool _mqttCommands(const char* command);
 	std::string _generateClientID();

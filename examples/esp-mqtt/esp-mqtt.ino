@@ -15,6 +15,7 @@ void setup() {
 	Serial.begin(115200);
 	Serial.println();
 	mqtt.onConnect(handleMqttConnect);
+	mqtt.onError(handleMqttError);
 	mqtt.onDisconnect(handleMqttDisconnect);
 	mqtt.onMessage(handleIncMqttMsg);
 	mqtt.commands(handleMqttCommands);
@@ -41,6 +42,9 @@ void handleWiFiDisconnected(DISCONNECTED_HANDLER_ARGS) {
 
 void handleMqttConnect() {
 	Serial.println("User handler for MQTT onConnect");
+}
+void handleMqttError(uint8_t error, uint32_t info) {
+	Serial.println("User handler for MQTT onError");
 }
 void handleMqttDisconnect(int8_t reason) {
 	Serial.println("User handler for MQTT onDisconnect");

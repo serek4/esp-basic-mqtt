@@ -9,6 +9,7 @@
 
 BasicMqtt   KEYWORD1
 onConnect   KEYWORD1
+OnError   KEYWORD1
 OnMessage   KEYWORD1
 OnDisconnect   KEYWORD1
 MqttCommands   KEYWORD1
@@ -26,6 +27,7 @@ setup  KEYWORD2
 setWaitingFunction  KEYWORD2
 waitForConnection   KEYWORD2
 onConnect   KEYWORD2
+onError   KEYWORD2
 onMessage   KEYWORD2
 onDisconnect   KEYWORD2
 commands   KEYWORD2
