@@ -4,83 +4,82 @@ PangolinMQTT _clientMqtt;
 Ticker _mqttReconnectTimer;
 
 bool BasicMqtt::_shouldBeConnected = true;
+std::string BasicMqtt::_client_ID = "";
+bool BasicMqtt::_cleanSession = true;
 
 BasicMqtt::BasicMqtt(const char* broker_address)
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(DEFAULT_PORT)
-    , _client_ID(_generateClientID())
-    , _cleanSession(true)
-    , _useCredentials(false)
-    , _will_topic((std::string)DEFAULT_WILL_TOPIC)
+    , _user("")
+    , _pass("")
     , _will_msg(STATUS_OFF_MSG)
     , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _command_topic(DEFAULT_COMMANDS_TOPIC)
     , _logger(nullptr) {
+	_client_ID = _generateClientID();
+	_cleanSession = true;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* user, const char* pass)
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(DEFAULT_PORT)
-    , _client_ID(_generateClientID())
-    , _cleanSession(true)
-    , _will_topic((std::string)DEFAULT_WILL_TOPIC)
     , _will_msg(STATUS_OFF_MSG)
-    , _useCredentials(true)
     , _user(user)
     , _pass(pass)
     , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _command_topic(DEFAULT_COMMANDS_TOPIC)
     , _logger(nullptr) {
+	_client_ID = _generateClientID();
+	_cleanSession = true;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
 }
 BasicMqtt::BasicMqtt(const char* broker_address, bool cleanSession, const char* user, const char* pass)
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(DEFAULT_PORT)
-    , _client_ID(_generateClientID())
-    , _cleanSession(cleanSession)
-    , _will_topic((std::string)DEFAULT_WILL_TOPIC)
     , _will_msg(STATUS_OFF_MSG)
-    , _useCredentials(true)
     , _user(user)
     , _pass(pass)
     , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _command_topic(DEFAULT_COMMANDS_TOPIC)
     , _logger(nullptr) {
+	_client_ID = _generateClientID();
+	_cleanSession = true;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass)
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(DEFAULT_PORT)
-    , _client_ID(clientID)
-    , _cleanSession(true)
-    , _will_topic((std::string)DEFAULT_WILL_TOPIC)
     , _will_msg(STATUS_OFF_MSG)
-    , _useCredentials(true)
     , _user(user)
     , _pass(pass)
     , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _command_topic(DEFAULT_COMMANDS_TOPIC)
     , _logger(nullptr) {
+	_client_ID = clientID;
+	_cleanSession = true;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* clientID, bool cleanSession, const char* user, const char* pass)
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(DEFAULT_PORT)
-    , _client_ID(clientID)
-    , _cleanSession(cleanSession)
-    , _will_topic((std::string)DEFAULT_WILL_TOPIC)
     , _will_msg(STATUS_OFF_MSG)
-    , _useCredentials(true)
     , _user(user)
     , _pass(pass)
     , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _command_topic(DEFAULT_COMMANDS_TOPIC)
     , _logger(nullptr) {
+	_client_ID = clientID;
+	_cleanSession = cleanSession;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
 }
 BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* clientID, bool cleanSession,
@@ -89,17 +88,16 @@ BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* cl
     : _connected(false)
     , _broker_address(broker_address)
     , _broker_port(broker_port)
-    , _client_ID(clientID)
-    , _cleanSession(cleanSession)
     , _will_topic(willTopic)
     , _will_msg(willMsg)
-    , _useCredentials(true)
     , _user(user)
     , _pass(pass)
     , _keepalive(keepAlive)
     , _command_topic(commandsTopic)
     , topicPrefix(topicPrefix)
     , _logger(nullptr) {
+	_client_ID = clientID;
+	_cleanSession = cleanSession;
 }
 
 void BasicMqtt::setConfig(Config config) {
@@ -108,7 +106,6 @@ void BasicMqtt::setConfig(Config config) {
 	_client_ID = config.client_ID;
 	_cleanSession = config.cleanSession;
 	_keepalive = config.keepalive;
-	_useCredentials = config.useCredentials;
 	_user = config.user;
 	_pass = config.pass;
 	topicPrefix = config.topicPrefix;
@@ -122,7 +119,6 @@ void BasicMqtt::getConfig(Config& config) {
 	config.client_ID = _client_ID;
 	config.cleanSession = _cleanSession;
 	config.keepalive = _keepalive;
-	config.useCredentials = _useCredentials;
 	config.user = _user;
 	config.pass = _pass;
 	config.topicPrefix = topicPrefix;
@@ -137,7 +133,6 @@ BasicMqtt::Config BasicMqtt::getConfig() {
 	config.client_ID = _client_ID;
 	config.cleanSession = _cleanSession;
 	config.keepalive = _keepalive;
-	config.useCredentials = _useCredentials;
 	config.user = _user;
 	config.pass = _pass;
 	config.topicPrefix = topicPrefix;
@@ -148,7 +143,7 @@ BasicMqtt::Config BasicMqtt::getConfig() {
 }
 void BasicMqtt::connect() {
 	BasicMqtt::_shouldBeConnected = true;
-	_clientMqtt.connect();
+	_clientMqtt.connect(_client_ID, _cleanSession);
 }
 void BasicMqtt::reconnect() {
 	disconnect();
@@ -157,11 +152,9 @@ void BasicMqtt::reconnect() {
 	});
 }
 void BasicMqtt::disconnect() {
-	if (_shouldBeConnected) {
-		BasicMqtt::_shouldBeConnected = false;
-		_clientMqtt.disconnect();
-		_mqttReconnectTimer.detach();
-	}
+	BasicMqtt::_shouldBeConnected = false;
+	if (_clientMqtt.connected()) { _clientMqtt.disconnect(); }
+	_mqttReconnectTimer.detach();
 }
 void BasicMqtt::onConnect(const OnConnect& handler) {
 	_onConnectHandlers.push_back(handler);
@@ -257,24 +250,19 @@ void BasicMqtt::addLogger(void (*logger)(String logLevel, String msg)) {
 	_logger = logger;
 }
 void BasicMqtt::setup() {
-	_clientMqtt.setClientId(_client_ID.c_str());
-	_clientMqtt.setCleanSession(_cleanSession);
 	_clientMqtt.setKeepAlive(_keepalive);
-	_clientMqtt.setWill(_will_topic.c_str(), QoS2, true, _will_msg.c_str());
-	if (_useCredentials) {
-		_clientMqtt.setCredentials(_user.c_str(), _pass.c_str());
-	}
-	_clientMqtt.setServer(_broker_address.c_str(), _broker_port);
-	_clientMqtt.onConnect([&](bool sessionPresent) {
+	_clientMqtt.setWill(_will_topic, QoS2, true, _will_msg);
+	_clientMqtt.setServer((_broker_address + ":" + String(_broker_port).c_str()).c_str(), _user.c_str(), _pass.c_str(), nullptr);
+	_clientMqtt.onMqttConnect([&](bool session) {
 		_onConnect();
 	});
-	_clientMqtt.onMessage([&](const char* topic, const uint8_t* payload, size_t len, uint8_t qos, bool retain, bool dup) {
+	_clientMqtt.onMqttMessage([&](const char* topic, const uint8_t* payload, size_t len, uint8_t qos, bool retain, bool dup) {
 		char* buf;
 		_clientMqtt.xPayload(payload, len, buf);
 		_onMessage(topic, buf);
 		free(buf);    //* DO NOT FORGET TO DO THIS!
 	});
-	_clientMqtt.onDisconnect([&](int8_t reason) {
+	_clientMqtt.onMqttDisconnect([&](int8_t reason) {
 		_onDisconnect(reason);
 	});
 }
@@ -305,7 +293,9 @@ bool BasicMqtt::waitForConnection(int waitTime) {
 
 void BasicMqtt::_onConnect() {
 	BASIC_MQTT_PRINTLN((String) "MQTT connected!\n " + _client_ID.c_str() + "@" + _broker_address.c_str());
-	if (_logger != nullptr) { (*_logger)("mqtt", (String) "MQTT connected [" + _client_ID.c_str() + "@" + _broker_address.c_str() + "]"); }
+	if (_logger != nullptr) {
+		(*_logger)("mqtt", (String) "MQTT connected [" + _client_ID.c_str() + "@" + _broker_address.c_str() + "]");
+	}
 	_connected = true;
 	_mqttReconnectTimer.detach();
 	_clientMqtt.publish((topicPrefix + "/status").c_str(), STATUS_ON_MSG, strlen(STATUS_ON_MSG), QoS0, true);
@@ -330,10 +320,11 @@ void BasicMqtt::_onDisconnect(int8_t reason) {
 	if (_logger != nullptr) {
 		(*_logger)(
 		    "mqtt",
-		    (String) "MQTT disconnected [" + String(_MQTTerror[(reason < 0) ? 12 : reason]) + (reason < 0 ? "(" + String(reason, 10) + ")]" : "]"));
+		    (String) "MQTT disconnected [" + String(_MQTTerror[(reason < 0) ? 24 : reason]) + (reason < 0 ? "(" + String(reason, 10) + ")]" : "]"));
 	}
 	_connected = false;
-	if (_shouldBeConnected) {
+	if (_clientMqtt.connected()) { _clientMqtt.close(); }    // make sure we are really disconnected
+	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
 		_mqttReconnectTimer.attach(_keepalive * PANGO_POLL_RATE, []() { connect(); });
 	}
 	for (const auto& handler : _onDisconnectHandlers) handler(reason);

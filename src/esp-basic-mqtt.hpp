@@ -49,7 +49,6 @@ class BasicMqtt {
 		std::string client_ID;
 		bool cleanSession;
 		uint16_t keepalive;
-		bool useCredentials;
 		std::string user;
 		std::string pass;
 		std::string topicPrefix;
@@ -109,12 +108,11 @@ class BasicMqtt {
   private:
 	std::string _broker_address;
 	uint16_t _broker_port;
-	std::string _client_ID;
-	bool _cleanSession;
+	static std::string _client_ID;
+	static bool _cleanSession;
 	uint16_t _keepalive;
 	std::string _will_topic;
 	std::string _will_msg;
-	bool _useCredentials;
 	std::string _user;
 	std::string _pass;
 	static bool _shouldBeConnected;
@@ -122,10 +120,13 @@ class BasicMqtt {
 	std::string _command_topic;
 	void (*_connectingIndicator)(u_long onTime, u_long offTime);
 	void (*_logger)(String logLevel, String msg);
-	const char* _MQTTerror[13] = {"TCP_DISCONNECTED", "MQTT_SERVER_UNAVAILABLE", "UNRECOVERABLE_CONNECT_FAIL",
-	                              "TLS_BAD_FINGERPRINT", "SUBSCRIBE_FAIL", "INBOUND_QOS_ACK_FAIL",
-	                              "OUTBOUND_QOS_ACK_FAIL", "INBOUND_PUB_TOO_BIG", "OUTBOUND_PUB_TOO_BIG", "BOGUS_PACKET",
-	                              "X_INVALID_LENGTH", "NO_SERVER_DETAILS", "TCP_ERROR"};
+	const char* _MQTTerror[25] = {
+	    "VARK_TCP_DISCONNECTED", "VARK_TCP_UNHANDLED", "VARK_TLS_BAD_FINGERPRINT", "VARK_TLS_NO_FINGERPRINT",
+	    "VARK_TLS_NO_SSL", "VARK_TLS_UNWANTED_FINGERPRINT", "VARK_INPUT_TOO_BIG", "AARDVARK_NON_TCP_ERROR",
+	    "TCP_DISCONNECTED", "MQTT_SERVER_UNAVAILABLE", "UNRECOVERABLE_CONNECT_FAIL", "TLS_BAD_FINGERPRINT",
+	    "TLS_NO_FINGERPRINT", "TLS_NO_SSL", "TLS_UNWANTED_FINGERPRINT", "SUBSCRIBE_FAIL", "INBOUND_QOS_ACK_FAIL",
+	    "OUTBOUND_QOS_ACK_FAIL", "INBOUND_PUB_TOO_BIG", "OUTBOUND_PUB_TOO_BIG", "BOGUS_PACKET",
+	    "X_INVALID_LENGTH", "NO_SERVER_DETAILS", "NOT_ENOUGH_MEMORY", "TCP_ERROR"};
 	std::vector<OnConnect> _onConnectHandlers;
 	std::vector<OnMessage> _onMessageHandlers;
 	std::vector<OnDisconnect> _onDisconnectHandlers;
