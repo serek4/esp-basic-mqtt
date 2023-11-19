@@ -30,6 +30,7 @@ void setup() {
 }
 
 void loop() {
+	h4.loop();
 	delay(10);
 }
 
@@ -43,10 +44,10 @@ void handleWiFiDisconnected(DISCONNECTED_HANDLER_ARGS) {
 void handleMqttConnect() {
 	Serial.println("User handler for MQTT onConnect");
 }
-void handleMqttError(uint8_t error, uint32_t info) {
+void handleMqttError(int error, int info) {
 	Serial.println("User handler for MQTT onError");
 }
-void handleMqttDisconnect(int8_t reason) {
+void handleMqttDisconnect() {
 	Serial.println("User handler for MQTT onDisconnect");
 }
 void handleIncMqttMsg(const char* topic, const char* payload) {
