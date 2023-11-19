@@ -307,6 +307,7 @@ void BasicMqtt::_onConnect() {
 	for (const auto& handler : _onConnectHandlers) handler();
 }
 void BasicMqtt::_onMessage(const char* _topic, const char* _payload) {
+	BASIC_MQTT_PRINTF("received message!\n msg.topic:   %s\n msg.payload: %s\n", _topic, _payload);
 	if (_topic == _will_topic) {
 		if (_payload == _will_msg) {
 			_clientMqtt.publish((topicPrefix + "/status").c_str(), STATUS_ON_MSG, strlen(STATUS_ON_MSG), QoS0, true);
@@ -329,16 +330,15 @@ void BasicMqtt::_onError(int error, int info) {
 			errorString = String(error);
 		}
 	}
+	BASIC_MQTT_PRINTLN(errorString);
 	if (_logger != nullptr) {
 		(*_logger)("mqtt", (String) "MQTT error [" + errorString + "]" + " extra info: " + String(info));
 	}
 	for (const auto& handler : _onErrorHandlers) handler(error, info);
 }
 void BasicMqtt::_onDisconnect() {
-	BASIC_MQTT_PRINTLN("MQTT disconnected: [" + String(reason, 10) + "]!");
-	if (_logger != nullptr) {
-		(*_logger)("mqtt", (String) "MQTT disconnected");
-	}
+	BASIC_MQTT_PRINTLN("MQTT disconnected");
+	if (_logger != nullptr) { (*_logger)("mqtt", (String) "MQTT disconnected"); }
 	_connected = false;
 	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
 		_mqttReconnectTimer.attach(_keepalive, []() { connect(); });
@@ -360,7 +360,7 @@ bool BasicMqtt::_mqttCommands(const char* command) {
 		BASIC_MQTT_PRINTF("received invalid command (%i tokens)\n", tokenizedCommand.size());
 		return false;
 	}
-	BASIC_MQTT_PRINTF("received command: %s\n", command, tokenizedCommand.size());
+	BASIC_MQTT_PRINTF("received command: %s\n", command);
 	// builtin commands
 	if (tokenizedCommand[0] == "mqtt") {
 		if (tokenizedCommand.size() > 1) {
