@@ -30,7 +30,7 @@
 #define STATUS_ON_MSG "1"
 #define STATUS_OFF_MSG "0"
 #define DEFAULT_PORT 1883
-#define DEFAULT_KEEP_ALIVE KEEP_ALIVE_INTERVAL
+#define DEFAULT_KEEP_ALIVE KEEP_ALIVE_INTERVAL / 1000
 #define DEFAULT_TOPIC_PREFIX "esp/" + _client_ID
 #define DEFAULT_WILL_TOPIC DEFAULT_TOPIC_PREFIX + "/status"
 #define DEFAULT_COMMANDS_TOPIC DEFAULT_TOPIC_PREFIX + "/commands"
@@ -118,7 +118,7 @@ class BasicMqtt {
 	static std::string _user;
 	static std::string _pass;
 	static bool _shouldBeConnected;
-	bool _connected;
+	static bool _connected;
 	std::string _command_topic;
 	void (*_connectingIndicator)(u_long onTime, u_long offTime);
 	void (*_logger)(String logLevel, String msg);
