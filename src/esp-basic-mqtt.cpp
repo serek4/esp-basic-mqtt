@@ -318,9 +318,10 @@ void BasicMqtt::_onMessage(const char* _topic, const char* _payload) {
 	for (const auto& handler : _onMessageHandlers) handler(_topic, _payload);
 }
 void BasicMqtt::_onError(int error, int info) {
+	if (error == ERR_OK) { return; }
 	String errorString = "";
 	if (error < H4AMC_ERROR_BASE) {    // H4ASYNC error
-		errorString = "H4ASYNC:" + (String)H4AsyncClient::errorstring(error).data() + "(" + String(error) + ")";
+		errorString = "H4AsyncTCP:" + (String)H4AsyncClient::errorstring(error).data() + "(" + String(error) + ")";
 	} else {
 		if (error < H4AMC_ERROR_MAX) {    // H4AsyncMQTT error
 			errorString = "H4AsyncMQTT:" + (String)H4AsyncMQTT::errorstring(error).data() + "(" + String(error) + ")";
