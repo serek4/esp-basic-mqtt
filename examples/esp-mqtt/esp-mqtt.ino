@@ -23,7 +23,7 @@ void setup() {
 	wifi.onGotIP(handleWiFiGotIP);
 	wifi.onDisconnected(handleWiFiDisconnected);
 	wifi.setup();
-	if (wifi.waitForConnection() == BasicWiFi::connected) {
+	if (wifi.waitForConnection() >= BasicWiFi::wifi_got_ip) {
 		mqtt.waitForConnection();
 	}
 	Serial.println("setup done!");
