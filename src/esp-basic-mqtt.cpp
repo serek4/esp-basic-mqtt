@@ -249,6 +249,7 @@ void BasicMqtt::addLogger(void (*logger)(String logLevel, String msg)) {
 }
 void BasicMqtt::setup() {
 	h4.setup();
+	_clientMqtt.setKeepAlive(_keepalive);
 	_clientMqtt.setWill(_will_topic.c_str(), QoS2, _will_msg.c_str(), true);
 	_clientMqtt.onConnect([&](H4AMC_ConnackParam params) {
 		_onConnect();

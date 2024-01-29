@@ -30,7 +30,7 @@
 #define STATUS_ON_MSG "1"
 #define STATUS_OFF_MSG "0"
 #define DEFAULT_PORT 1883
-#define DEFAULT_KEEP_ALIVE KEEP_ALIVE_INTERVAL / 1000
+#define DEFAULT_KEEP_ALIVE 15
 #define DEFAULT_TOPIC_PREFIX "esp/" + _client_ID
 #define DEFAULT_WILL_TOPIC DEFAULT_TOPIC_PREFIX + "/status"
 #define DEFAULT_COMMANDS_TOPIC DEFAULT_TOPIC_PREFIX + "/commands"
@@ -86,6 +86,7 @@ class BasicMqtt {
 	void onError(const OnError& handler);
 	void onDisconnect(const OnDisconnect& handler);
 	void commands(const OnCommand& handler);
+	// clang-format off
 	void publish(const char* topic, const char* payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, std::string payload, uint8_t qos = QoS0, bool retain = false);
 	void publish(const char* topic, String payload, uint8_t qos = QoS0, bool retain = false);
@@ -102,6 +103,8 @@ class BasicMqtt {
 	void publish(const char* topic, float payload, uint8_t qos = QoS0, bool retain = false) { publish(topic, payload, 3, 2, qos, retain); };
 	void publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos = QoS0, bool retain = false);
 	uint32_t subscribe(const char* topic, uint8_t qos = QoS0);
+	void setKeepAlive(uint16_t keepAlive) { _keepalive = keepAlive; };
+	// clang-format on
 	static void connect();
 	static void reconnect();
 	static void disconnect();
