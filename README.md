@@ -6,14 +6,16 @@ This library is part of [framework](https://github.com/serek4/esp-basic)
 
 ### [esp32 Arduino core - 2.0.14](https://github.com/espressif/arduino-esp32/tree/2.0.14)
 
-### [H4AsyncMQTT - 1.0.0-rc6](https://github.com/serek4/H4AsyncMQTT/tree/1.0.0-rc6)
+### [H4AsyncMQTT - 1.0.0.1](https://github.com/serek4/H4AsyncMQTT/tree/1.0.0.1) - MQTT 3.1.1 no TLS
 
 ```cpp
+#define H4AMC_AUTO_RECONNECT 0
+
 #define MQTT_VERSION       0x04 // MQTT v3.1.1
 // #define MQTT_VERSION       0x05 // MQTT v5.0
 ```
 
-- [H4AsyncTCP - 0.0.18](https://github.com/serek4/H4AsyncTCP/tree/0.0.18)  
+- [H4AsyncTCP - 0.0.18.1](https://github.com/serek4/H4AsyncTCP/tree/0.0.18.1)  
 
     ```cpp
     #define H4AT_USE_TLS        0
