@@ -160,56 +160,66 @@ void BasicMqtt::onMessage(const OnMessage& handler) {
 void BasicMqtt::onError(const OnError& handler) {
 	_onErrorHandlers.push_back(handler);
 }
+void BasicMqtt::onPublish(const OnPublish& handler) {
+	_onPublishHandlers.push_back(handler);
+}
 void BasicMqtt::onDisconnect(const OnDisconnect& handler) {
 	_onDisconnectHandlers.push_back(handler);
 }
 void BasicMqtt::commands(const OnCommand& handler) {
 	_mqttCommandsHandlers.push_back(handler);
 }
-void BasicMqtt::publish(const char* topic, const char* payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, const char* payload, uint8_t qos, bool retain) {
 	if (_connected) {
-		_clientMqtt.publish(topic, payload, strlen(payload), qos, retain);
+		return _clientMqtt.publish(topic, payload, strlen(payload), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, std::string payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, std::string payload, uint8_t qos, bool retain) {
 	if (_connected) {
-		_clientMqtt.publish(topic, payload.c_str(), payload.length(), qos, retain);
+		return _clientMqtt.publish(topic, payload.c_str(), payload.length(), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, String payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, String payload, uint8_t qos, bool retain) {
 	if (_connected) {
-		_clientMqtt.publish(topic, payload.c_str(), payload.length(), qos, retain);
+		return _clientMqtt.publish(topic, payload.c_str(), payload.length(), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, int32_t payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, int32_t payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[12];
 		itoa(payload, numberBuffer, 10);
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, long payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, long payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[12];
 		ltoa(payload, numberBuffer, 10);
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, uint32_t payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, uint32_t payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[12];
 		utoa(payload, numberBuffer, 10);
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, u_long payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, u_long payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[12];
 		ultoa(payload, numberBuffer, 10);
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, int64_t payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, int64_t payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[21];
 #ifdef ARDUINO_ARCH_ESP32
@@ -217,10 +227,11 @@ void BasicMqtt::publish(const char* topic, int64_t payload, uint8_t qos, bool re
 #elif defined(ARDUINO_ARCH_ESP8266)
 		lltoa(payload, numberBuffer, sizeof(numberBuffer), 10);
 #endif
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, uint64_t payload, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, uint64_t payload, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[21];
 #ifdef ARDUINO_ARCH_ESP32
@@ -228,15 +239,17 @@ void BasicMqtt::publish(const char* topic, uint64_t payload, uint8_t qos, bool r
 #elif defined(ARDUINO_ARCH_ESP8266)
 		ulltoa(payload, numberBuffer, sizeof(numberBuffer), 10);
 #endif
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
-void BasicMqtt::publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos, bool retain) {
 	if (_connected) {
 		char numberBuffer[21];
 		dtostrf(payload, width, prec, numberBuffer);
-		_clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
+		return _clientMqtt.publish(topic, (uint8_t*)numberBuffer, (size_t)strlen(numberBuffer), qos, retain);
 	}
+	return (PacketID)0;
 }
 uint32_t BasicMqtt::subscribe(const char* topic, uint8_t qos) {
 	return _clientMqtt.subscribe(topic, qos);
@@ -262,6 +275,9 @@ void BasicMqtt::setup() {
 	});
 	_clientMqtt.onError([&](int e, int info) {
 		_onError(e, info);
+	});
+	_clientMqtt.onPublish([&](PacketID packetId) {
+		_onPublish(packetId);
 	});
 	_clientMqtt.onDisconnect([&]() {
 		_onDisconnect();
@@ -335,6 +351,10 @@ void BasicMqtt::_onError(int error, int info) {
 		(*_logger)("mqtt", (String) "MQTT error [" + errorString + "]" + " extra info: " + String(info));
 	}
 	for (const auto& handler : _onErrorHandlers) handler(error, info);
+}
+void BasicMqtt::_onPublish(PacketID packetId) {
+	BASIC_MQTT_PRINTF("Packet: %i published\n", packetId);
+	for (const auto& handler : _onPublishHandlers) handler(packetId);
 }
 void BasicMqtt::_onDisconnect() {
 	BASIC_MQTT_PRINTLN("MQTT disconnected");

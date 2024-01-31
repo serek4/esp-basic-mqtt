@@ -16,6 +16,7 @@ void setup() {
 	Serial.println();
 	mqtt.onConnect(handleMqttConnect);
 	mqtt.onError(handleMqttError);
+	mqtt.onPublish(handleMqttPublish);
 	mqtt.onDisconnect(handleMqttDisconnect);
 	mqtt.onMessage(handleIncMqttMsg);
 	mqtt.commands(handleMqttCommands);
@@ -46,6 +47,9 @@ void handleMqttConnect() {
 }
 void handleMqttError(int error, int info) {
 	Serial.println("User handler for MQTT onError");
+}
+void handleMqttPublish(PacketID packetId) {
+	Serial.printf("Packet: %i successfully published\n", packetId);
 }
 void handleMqttDisconnect() {
 	Serial.println("User handler for MQTT onDisconnect");
