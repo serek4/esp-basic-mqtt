@@ -142,7 +142,7 @@ void BasicMqtt::connect() {
 }
 void BasicMqtt::reconnect() {
 	disconnect();
-	_mqttReconnectTimer.once(MQTT_RECONNECT_DELAY, []() {
+	_mqttReconnectTimer.once(MQTT_MANUAL_RECONNECT_DELAY, []() {
 		connect();
 	});
 }
@@ -341,7 +341,7 @@ void BasicMqtt::_onDisconnect() {
 	if (_logger != nullptr) { (*_logger)("mqtt", (String) "MQTT disconnected"); }
 	_connected = false;
 	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
-		_mqttReconnectTimer.attach(_keepalive, []() { connect(); });
+		_mqttReconnectTimer.attach(MQTT_AUTO_RECONNECT_DELAY, []() { _clientMqtt.reconnect(); });
 	}
 	for (const auto& handler : _onDisconnectHandlers) handler();
 }
