@@ -318,16 +318,10 @@ void BasicMqtt::_onConnect() {
 	_mqttReconnectTimer.detach();
 	_clientMqtt.publish((topicPrefix + "/status").c_str(), STATUS_ON_MSG, strlen(STATUS_ON_MSG), QoS0, true);
 	_clientMqtt.subscribe(_command_topic.c_str(), QoS0);
-	_clientMqtt.subscribe((topicPrefix + "/status").c_str(), QoS0);
 	for (const auto& handler : _onConnectHandlers) handler();
 }
 void BasicMqtt::_onMessage(const char* _topic, const char* _payload) {
 	BASIC_MQTT_PRINTF("received message!\n msg.topic:   %s\n msg.payload: %s\n", _topic, _payload);
-	if (_topic == _will_topic) {
-		if (_payload == _will_msg) {
-			_clientMqtt.publish((topicPrefix + "/status").c_str(), STATUS_ON_MSG, strlen(STATUS_ON_MSG), QoS0, true);
-		}
-	}
 	if (_topic == _command_topic) {
 		_mqttCommands(_payload);
 		return;
