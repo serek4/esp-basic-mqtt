@@ -16,6 +16,7 @@ void setup() {
 	Serial.println();
 	mqtt.onConnect(handleMqttConnect);
 	mqtt.onError(handleMqttError);
+	mqtt.onPublish(handleMqttPublish);
 	mqtt.onDisconnect(handleMqttDisconnect);
 	mqtt.onMessage(handleIncMqttMsg);
 	mqtt.commands(handleMqttCommands);
@@ -30,6 +31,7 @@ void setup() {
 }
 
 void loop() {
+	h4.loop();
 	delay(10);
 }
 
@@ -43,10 +45,13 @@ void handleWiFiDisconnected(DISCONNECTED_HANDLER_ARGS) {
 void handleMqttConnect() {
 	Serial.println("User handler for MQTT onConnect");
 }
-void handleMqttError(uint8_t error, uint32_t info) {
+void handleMqttError(int error, int info) {
 	Serial.println("User handler for MQTT onError");
 }
-void handleMqttDisconnect(int8_t reason) {
+void handleMqttPublish(PacketID packetId) {
+	Serial.printf("Packet: %i successfully published\n", packetId);
+}
+void handleMqttDisconnect() {
 	Serial.println("User handler for MQTT onDisconnect");
 }
 void handleIncMqttMsg(const char* topic, const char* payload) {

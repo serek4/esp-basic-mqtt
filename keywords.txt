@@ -28,6 +28,7 @@ setWaitingFunction  KEYWORD2
 waitForConnection   KEYWORD2
 onConnect   KEYWORD2
 onError   KEYWORD2
+onPublish   KEYWORD2
 onMessage   KEYWORD2
 onDisconnect   KEYWORD2
 commands   KEYWORD2
