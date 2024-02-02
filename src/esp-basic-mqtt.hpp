@@ -26,7 +26,7 @@
 #define MQTT_BLINK_ON 100
 #define MQTT_BLINK_OFF 150
 #define MQTT_NO_BLINK MQTT_BLINK_ON + MQTT_BLINK_OFF
-#define MQTT_MANUAL_RECONNECT_DELAY 5
+#define MQTT_MANUAL_RECONNECT_DELAY 10
 #define MQTT_AUTO_RECONNECT_DELAY 30
 #define STATUS_ON_MSG "1"
 #define STATUS_OFF_MSG "0"
@@ -63,6 +63,11 @@ class BasicMqtt {
 		QoS0,
 		QoS1,
 		QoS2
+	};
+	enum ConnectionStatus {
+		s_disconnected,
+		s_connecting,
+		s_connected
 	};
 
 	BasicMqtt(const char* broker_address);
@@ -124,7 +129,7 @@ class BasicMqtt {
 	static std::string _user;
 	static std::string _pass;
 	static bool _shouldBeConnected;
-	static bool _connected;
+	static uint8_t _connectionStatus;
 	std::string _command_topic;
 	void (*_connectingIndicator)(u_long onTime, u_long offTime);
 	void (*_logger)(String logLevel, String msg);
