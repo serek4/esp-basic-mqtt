@@ -11,11 +11,11 @@
 BasicMqtt mqtt(MQTT_BROKER, MQTT_USER, MQTT_PASS);
 BasicWiFi wifi(WIFI_SSID, WIFI_PASS);
 
+long loopDelay = -50000;
 void setup() {
 	Serial.begin(115200);
 	Serial.println();
 	mqtt.onConnect(handleMqttConnect);
-	mqtt.onError(handleMqttError);
 	mqtt.onPublish(handleMqttPublish);
 	mqtt.onDisconnect(handleMqttDisconnect);
 	mqtt.onMessage(handleIncMqttMsg);
@@ -31,8 +31,10 @@ void setup() {
 }
 
 void loop() {
-	h4.loop();
-	delay(10);
+	if (millis() - loopDelay >= 60000) {
+		loopDelay = millis();
+		mqtt.publish((mqtt.topicPrefix + "/loop").c_str(), millis(), BasicMqtt::QoS1);
+	}
 }
 
 void handleWiFiGotIP(GOT_IP_HANDLER_ARGS) {
@@ -42,16 +44,13 @@ void handleWiFiDisconnected(DISCONNECTED_HANDLER_ARGS) {
 	mqtt.disconnect();
 }
 
-void handleMqttConnect() {
+void handleMqttConnect(bool sessionPresent) {
 	Serial.println("User handler for MQTT onConnect");
-}
-void handleMqttError(int error, int info) {
-	Serial.println("User handler for MQTT onError");
 }
 void handleMqttPublish(PacketID packetId) {
 	Serial.printf("Packet: %i successfully published\n", packetId);
 }
-void handleMqttDisconnect() {
+void handleMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
 	Serial.println("User handler for MQTT onDisconnect");
 }
 void handleIncMqttMsg(const char* topic, const char* payload) {
