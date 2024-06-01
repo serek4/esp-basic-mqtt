@@ -13,17 +13,17 @@ std::string BasicMqtt::_client_ID = "";
 bool BasicMqtt::_cleanSession = true;
 
 BasicMqtt::BasicMqtt(const char* broker_address)
-    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), DEFAULT_KEEP_ALIVE, "", "") {
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), "", "") {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* user, const char* pass)
-    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), DEFAULT_KEEP_ALIVE, user, pass) {
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass)
-    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, clientID, DEFAULT_KEEP_ALIVE, user, pass) {
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, clientID, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* clientID,
-                     int keepAlive, const char* user, const char* pass)
-    : _keepalive(keepAlive)
+                     const char* user, const char* pass)
+    : _keepalive(DEFAULT_KEEP_ALIVE)
     , _will_msg(STATUS_OFF_MSG)
     , _logger(nullptr) {
 	_broker_address = broker_address;
@@ -205,6 +205,9 @@ void BasicMqtt::addLogger(void (*logger)(String logLevel, String msg)) {
 }
 void BasicMqtt::setCleanSession(bool cleanSession) {
 	_cleanSession = cleanSession;
+}
+void BasicMqtt::setKeepAlive(uint16_t keepAlive) {
+	_keepalive = keepAlive;
 }
 void BasicMqtt::setup() {
 	_clientMqtt.setKeepAlive(_keepalive);

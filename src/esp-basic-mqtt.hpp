@@ -74,7 +74,7 @@ class BasicMqtt {
 	BasicMqtt(const char* broker_address, const char* user, const char* pass);
 	BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass);
 	BasicMqtt(const char* broker_address, int broker_port, const char* clientID,
-	          int keepAlive, const char* user, const char* pass);
+	          const char* user, const char* pass);
 
 	std::string topicPrefix;
 
@@ -83,6 +83,7 @@ class BasicMqtt {
 	Config getConfig();
 	void addLogger(void (*logger)(String logLevel, String msg));
 	void setCleanSession(bool cleanSession);
+	void setKeepAlive(uint16_t keepAlive);
 	void setup();
 	void setWaitingFunction(void (*connectingIndicator)(u_long onTime, u_long offTime));
 	bool waitForConnection(int waitTime = 10);
