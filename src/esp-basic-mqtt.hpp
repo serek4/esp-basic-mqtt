@@ -32,7 +32,7 @@
 #define STATUS_OFF_MSG "0"
 #define DEFAULT_PORT 1883
 #define DEFAULT_KEEP_ALIVE 15
-#define DEFAULT_TOPIC_PREFIX "esp/" + _client_ID
+#define DEFAULT_TOPIC_PREFIX "esp/" + _clientID
 #define DEFAULT_WILL_TOPIC DEFAULT_TOPIC_PREFIX + "/status"
 #define DEFAULT_COMMANDS_TOPIC DEFAULT_TOPIC_PREFIX + "/commands"
 
@@ -49,7 +49,7 @@ class BasicMqtt {
 	struct Config {
 		std::string broker_address;
 		uint16_t broker_port;
-		std::string client_ID;
+		std::string clientID;
 		bool cleanSession;
 		uint16_t keepalive;
 		std::string user;
@@ -72,9 +72,7 @@ class BasicMqtt {
 
 	BasicMqtt(const char* broker_address);
 	BasicMqtt(const char* broker_address, const char* user, const char* pass);
-	BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass);
-	BasicMqtt(const char* broker_address, int broker_port, const char* clientID,
-	          const char* user, const char* pass);
+	BasicMqtt(const char* broker_address, int broker_port, const char* user, const char* pass);
 
 	std::string topicPrefix;
 
@@ -84,6 +82,7 @@ class BasicMqtt {
 	void addLogger(void (*logger)(String logLevel, String msg));
 	void setCleanSession(bool cleanSession);
 	void setKeepAlive(uint16_t keepAlive);
+	void setclientID(const char* clientID);
 	void setup();
 	void setWaitingFunction(void (*connectingIndicator)(u_long onTime, u_long offTime));
 	bool waitForConnection(int waitTime = 10);
@@ -109,7 +108,6 @@ class BasicMqtt {
 	PacketID publish(const char* topic, float payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, payload, 3, 2, qos, retain); };
 	PacketID publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos = QoS0, bool retain = false);
 	PacketID subscribe(const char* topic, uint8_t qos = QoS0);
-	void setKeepAlive(uint16_t keepAlive) { _keepalive = keepAlive; };
 	// clang-format on
 	static void connect();
 	static void reconnect();
@@ -119,7 +117,7 @@ class BasicMqtt {
   private:
 	static std::string _broker_address;
 	static uint16_t _broker_port;
-	static std::string _client_ID;
+	static std::string _clientID;
 	static bool _cleanSession;
 	uint16_t _keepalive;
 	std::string _will_topic;
