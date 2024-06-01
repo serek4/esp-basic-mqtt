@@ -4,23 +4,12 @@ This library is part of [framework](https://github.com/serek4/esp-basic)
 
 ### [esp8266 Arduino core - 3.1.2](https://github.com/esp8266/Arduino/tree/3.1.2)
 
+- Patched version of [ESPAsyncTCP.h - v1.1.1-1](https://github.com/serek4/AsyncTCP/tree/v1.1.1-1)  
+
 ### [esp32 Arduino core - 2.0.14](https://github.com/espressif/arduino-esp32/tree/2.0.14)
 
-### [H4AsyncMQTT - 1.0.0.1](https://github.com/serek4/H4AsyncMQTT/tree/1.0.0.1) - MQTT 3.1.1 no TLS
+- Patched version of [AsyncTCP.h - v1.1.1-1](https://github.com/serek4/AsyncTCP/tree/v1.1.1-1)  
 
-```cpp
-#define H4AMC_AUTO_RECONNECT 0
+### [AsyncMqttClient - 0.9.0 + 1 commit](https://github.com/marvinroger/async-mqtt-client/tree/fb9db765ec120d95f3c7c34bf464fb4fe5ea6a8a)
 
-#define MQTT_VERSION       0x04 // MQTT v3.1.1
-// #define MQTT_VERSION       0x05 // MQTT v5.0
-```
 
-- [H4AsyncTCP - 0.0.18.1](https://github.com/serek4/H4AsyncTCP/tree/0.0.18.1)  
-
-    ```cpp
-    #define H4AT_USE_TLS        0
-    #define H4AT_TLS_CHECKER    0 // for isCertValid() and isPrivKeyValid()
-    ```
-
-    - [H4Tools.h -0.0.9 (+ 1 commit)](https://github.com/serek4/H4Tools/tree/2171049ff95d7fe1867504f66bc3affc3aacc9f9)  
-    - [H4.h - 4.0.3.1](https://github.com/serek4/H4/tree/4.0.3.1)  

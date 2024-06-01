@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <H4AsyncMQTT.h>
+#include <AsyncMqttClient.h>
 #include <Ticker.h>
 #include <functional>
 #include <stdint.h>
@@ -37,14 +37,14 @@
 #define DEFAULT_COMMANDS_TOPIC DEFAULT_TOPIC_PREFIX + "/commands"
 
 
+using PacketID = uint16_t;
 class BasicMqtt {
   public:
 	typedef std::vector<std::string> Command;
-	typedef std::function<void()> OnConnect;
+	typedef std::function<void(bool sessionPresent)> OnConnect;
 	typedef std::function<void(const char* _topic, const char* _payload)> OnMessage;
-	typedef std::function<void(int error, int info)> OnError;
 	typedef std::function<void(PacketID packetId)> OnPublish;
-	typedef std::function<void()> OnDisconnect;
+	typedef std::function<void(AsyncMqttClientDisconnectReason reason)> OnDisconnect;
 	typedef std::function<bool(Command mqttCommand)> OnCommand;
 	struct Config {
 		std::string broker_address;
@@ -90,7 +90,6 @@ class BasicMqtt {
 	bool waitForConnection(int waitTime = 10);
 	void onConnect(const OnConnect& handler);
 	void onMessage(const OnMessage& handler);
-	void onError(const OnError& handler);
 	void onPublish(const OnPublish& handler);
 	void onDisconnect(const OnDisconnect& handler);
 	void commands(const OnCommand& handler);
@@ -110,7 +109,7 @@ class BasicMqtt {
 	PacketID publish(const char* topic, uint64_t payload, uint8_t qos = QoS0, bool retain = false);
 	PacketID publish(const char* topic, float payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, payload, 3, 2, qos, retain); };
 	PacketID publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos = QoS0, bool retain = false);
-	uint32_t subscribe(const char* topic, uint8_t qos = QoS0);
+	PacketID subscribe(const char* topic, uint8_t qos = QoS0);
 	void setKeepAlive(uint16_t keepAlive) { _keepalive = keepAlive; };
 	// clang-format on
 	static void connect();
@@ -135,15 +134,13 @@ class BasicMqtt {
 	void (*_logger)(String logLevel, String msg);
 	std::vector<OnConnect> _onConnectHandlers;
 	std::vector<OnMessage> _onMessageHandlers;
-	std::vector<OnError> _onErrorHandlers;
 	std::vector<OnPublish> _onPublishHandlers;
 	std::vector<OnDisconnect> _onDisconnectHandlers;
 	std::vector<OnCommand> _mqttCommandsHandlers;
-	void _onConnect();
+	void _onConnect(bool sessionPresent);
 	void _onMessage(const char* _topic, const char* _payload);
-	void _onError(int error, int info);
 	void _onPublish(PacketID packetId);
-	void _onDisconnect();
+	void _onDisconnect(AsyncMqttClientDisconnectReason reason);
 	bool _mqttCommands(const char* command);
 	std::string _generateClientID();
 };
