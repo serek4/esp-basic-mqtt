@@ -76,8 +76,7 @@ class BasicMqtt {
 	BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass);
 	BasicMqtt(const char* broker_address, const char* clientID, bool cleanSession, const char* user, const char* pass);
 	BasicMqtt(const char* broker_address, int broker_port, const char* clientID, bool cleanSession,
-	          int keepAlive, const char* willTopic, const char* willMsg, const char* topicPrefix,
-	          const char* commandsTopic, const char* user, const char* pass);
+	          int keepAlive, const char* user, const char* pass);
 
 	std::string topicPrefix;
 

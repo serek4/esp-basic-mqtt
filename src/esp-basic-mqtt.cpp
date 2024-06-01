@@ -13,76 +13,24 @@ std::string BasicMqtt::_client_ID = "";
 bool BasicMqtt::_cleanSession = true;
 
 BasicMqtt::BasicMqtt(const char* broker_address)
-    : _will_msg(STATUS_OFF_MSG)
-    , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _logger(nullptr) {
-	_broker_address = broker_address;
-	_client_ID = _generateClientID();
-	_cleanSession = true;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), true, DEFAULT_KEEP_ALIVE, "", "") {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* user, const char* pass)
-    : _will_msg(STATUS_OFF_MSG)
-    , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _logger(nullptr) {
-	_broker_address = broker_address;
-	_client_ID = _generateClientID();
-	_cleanSession = true;
-	_user = user;
-	_pass = pass;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), true, DEFAULT_KEEP_ALIVE, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, bool cleanSession, const char* user, const char* pass)
-    : _will_msg(STATUS_OFF_MSG)
-    , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _logger(nullptr) {
-	_broker_address = broker_address;
-	_client_ID = _generateClientID();
-	_cleanSession = true;
-	_user = user;
-	_pass = pass;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, _generateClientID().c_str(), cleanSession, DEFAULT_KEEP_ALIVE, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* clientID, const char* user, const char* pass)
-    : _will_msg(STATUS_OFF_MSG)
-    , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _logger(nullptr) {
-	_broker_address = broker_address;
-	_client_ID = clientID;
-	_cleanSession = true;
-	_user = user;
-	_pass = pass;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, clientID, true, DEFAULT_KEEP_ALIVE, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, const char* clientID, bool cleanSession, const char* user, const char* pass)
-    : _will_msg(STATUS_OFF_MSG)
-    , _keepalive(DEFAULT_KEEP_ALIVE)
-    , _logger(nullptr) {
-	_broker_address = broker_address;
-	_client_ID = clientID;
-	_cleanSession = cleanSession;
-	_user = user;
-	_pass = pass;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+    : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, clientID, cleanSession, DEFAULT_KEEP_ALIVE, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* clientID, bool cleanSession,
-                     int keepAlive, const char* willTopic, const char* willMsg, const char* topicPrefix,
-                     const char* commandsTopic, const char* user, const char* pass)
-    : _will_topic(willTopic)
-    , _will_msg(willMsg)
-    , _keepalive(keepAlive)
-    , _command_topic(commandsTopic)
-    , topicPrefix(topicPrefix)
+                     int keepAlive, const char* user, const char* pass)
+    : _keepalive(keepAlive)
+    , _will_msg(STATUS_OFF_MSG)
     , _logger(nullptr) {
 	_broker_address = broker_address;
 	_broker_port = broker_port;
@@ -90,6 +38,9 @@ BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* cl
 	_user = user;
 	_pass = pass;
 	_cleanSession = cleanSession;
+	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
+	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
+	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
 }
 
 void BasicMqtt::setConfig(Config config) {
