@@ -32,9 +32,9 @@
 #define STATUS_OFF_MSG "0"
 #define DEFAULT_PORT 1883
 #define DEFAULT_KEEP_ALIVE 15
-#define DEFAULT_TOPIC_PREFIX "esp/" + _clientID
-#define DEFAULT_WILL_TOPIC DEFAULT_TOPIC_PREFIX + "/status"
-#define DEFAULT_COMMANDS_TOPIC DEFAULT_TOPIC_PREFIX + "/commands"
+#define DEFAULT_TOPIC_PREFIX "esp/"
+#define DEFAULT_COMMANDS_TOPIC_SUFFIX "/commands"
+#define DEFAULT_WILL_TOPIC_SUFFIX "/status"
 
 
 using PacketID = uint16_t;
@@ -140,4 +140,7 @@ class BasicMqtt {
 	void _onDisconnect(AsyncMqttClientDisconnectReason reason);
 	bool _mqttCommands(const char* command);
 	std::string _generateClientID();
+	std::string _generateTopicPrefix(const char* prefix = DEFAULT_TOPIC_PREFIX);
+	std::string _generateCommandTopic(const char* suffix = DEFAULT_COMMANDS_TOPIC_SUFFIX);
+	std::string _generateWillTopic(const char* suffix = DEFAULT_WILL_TOPIC_SUFFIX);
 };

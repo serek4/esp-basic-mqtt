@@ -24,12 +24,12 @@ BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* us
     , _logger(nullptr) {
 	_broker_address = broker_address;
 	_broker_port = broker_port;
-	_clientID = _generateClientID();
 	_user = user;
 	_pass = pass;
-	_will_topic = (std::string)DEFAULT_WILL_TOPIC;
-	topicPrefix = (std::string)DEFAULT_TOPIC_PREFIX;
-	_command_topic = (std::string)DEFAULT_COMMANDS_TOPIC;
+	_clientID = _generateClientID();
+	topicPrefix = _generateTopicPrefix();
+	_command_topic = _generateCommandTopic();
+	_will_topic = _generateWillTopic();
 }
 
 void BasicMqtt::setConfig(Config config) {
@@ -207,6 +207,9 @@ void BasicMqtt::setKeepAlive(uint16_t keepAlive) {
 }
 void BasicMqtt::setclientID(const char* clientID) {
 	_clientID = clientID;
+	topicPrefix = _generateTopicPrefix();
+	_command_topic = _generateCommandTopic();
+	_will_topic = _generateWillTopic();
 }
 void BasicMqtt::setup() {
 	_clientMqtt.setKeepAlive(_keepalive);
@@ -337,4 +340,13 @@ std::string BasicMqtt::_generateClientID() {
 	sprintf(id, "%06X", ESP.getChipId());
 	return (std::string) "esp_" + id;
 #endif
+}
+std::string BasicMqtt::_generateTopicPrefix(const char* prefix) {
+	return (std::string) prefix + _clientID;
+}
+std::string BasicMqtt::_generateCommandTopic(const char* suffix) {
+	return (std::string)topicPrefix + suffix;
+}
+std::string BasicMqtt::_generateWillTopic(const char* suffix) {
+	return (std::string)topicPrefix + suffix;
 }
