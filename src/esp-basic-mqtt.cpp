@@ -282,9 +282,9 @@ void BasicMqtt::_onPublish(PacketID packetId) {
 	BASIC_MQTT_PRINTF("Packet: %i published\n", packetId);
 	for (const auto& handler : _onPublishHandlers) handler(packetId);
 }
-void BasicMqtt::_onDisconnect(AsyncMqttClientDisconnectReason reason) {
-	BASIC_MQTT_PRINTF("MQTT disconnected, reason: %i\n", (uint8_t)reason);
-	if (_logger != nullptr) { (*_logger)("mqtt", "MQTT disconnected: " + String((uint8_t)reason)); }
+void BasicMqtt::_onDisconnect(espMqttClientTypes::DisconnectReason reason) {
+	BASIC_MQTT_PRINTF("MQTT disconnected, reason: %s\n", (String)disconnectReasonToString(reason));
+	if (_logger != nullptr) { (*_logger)("mqtt", "MQTT disconnected: " + (String)disconnectReasonToString(reason)); }
 	_connectionStatus = s_disconnected;
 	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
 		_mqttReconnectTimer.attach(MQTT_AUTO_RECONNECT_DELAY, []() {
