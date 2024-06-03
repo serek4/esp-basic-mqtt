@@ -222,10 +222,11 @@ void BasicMqtt::setup() {
 		_onConnect(sessionPresent);
 	});
 	_clientMqtt.onMessage([&](const espMqttClientTypes::MessageProperties& properties, const char* topic, const uint8_t* payload, size_t len, size_t index, size_t total) {
-		char buffer[len + 1];
-		buffer[len] = '\0';
+		char* buffer = new char[len + 1];
 		memcpy(buffer, payload, len);
+		buffer[len] = '\0';
 		_onMessage(topic, buffer);
+		delete[] buffer;
 	});
 	_clientMqtt.onPublish([&](uint16_t packetId) {
 		_onPublish((PacketID)packetId);
