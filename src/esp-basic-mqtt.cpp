@@ -1,6 +1,6 @@
 #include "esp-basic-mqtt.hpp"
 
-AsyncMqttClient _clientMqtt;
+espMqttClientAsync _clientMqtt;
 Ticker _mqttReconnectTimer;
 
 std::string BasicMqtt::_broker_address = "";
@@ -221,16 +221,16 @@ void BasicMqtt::setup() {
 	_clientMqtt.onConnect([&](bool sessionPresent) {
 		_onConnect(sessionPresent);
 	});
-	_clientMqtt.onMessage([&](char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+	_clientMqtt.onMessage([&](const espMqttClientTypes::MessageProperties& properties, const char* topic, const uint8_t* payload, size_t len, size_t index, size_t total) {
 		char buffer[len + 1];
 		buffer[len] = '\0';
-		strncpy(buffer, payload, len);
+		memcpy(buffer, payload, len);
 		_onMessage(topic, buffer);
 	});
 	_clientMqtt.onPublish([&](uint16_t packetId) {
 		_onPublish((PacketID)packetId);
 	});
-	_clientMqtt.onDisconnect([&](AsyncMqttClientDisconnectReason reason) {
+	_clientMqtt.onDisconnect([&](espMqttClientTypes::DisconnectReason reason) {
 		_onDisconnect(reason);
 	});
 }

@@ -50,7 +50,7 @@ void handleMqttConnect(bool sessionPresent) {
 void handleMqttPublish(PacketID packetId) {
 	Serial.printf("Packet: %i successfully published\n", packetId);
 }
-void handleMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+void handleMqttDisconnect(espMqttClientTypes::DisconnectReason reason) {
 	Serial.println("User handler for MQTT onDisconnect");
 }
 void handleIncMqttMsg(const char* topic, const char* payload) {
