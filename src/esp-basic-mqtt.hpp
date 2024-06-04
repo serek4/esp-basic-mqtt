@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <list>
 
 // #define BASIC_MQTT_DEBUG
 // debug printing macros
@@ -129,11 +130,11 @@ class BasicMqtt {
 	std::string _command_topic;
 	void (*_connectingIndicator)(u_long onTime, u_long offTime);
 	void (*_logger)(String logLevel, String msg);
-	std::vector<OnConnect> _onConnectHandlers;
-	std::vector<OnMessage> _onMessageHandlers;
-	std::vector<OnPublish> _onPublishHandlers;
-	std::vector<OnDisconnect> _onDisconnectHandlers;
-	std::vector<OnCommand> _mqttCommandsHandlers;
+	std::list<OnConnect> _onConnectHandlers;
+	std::list<OnMessage> _onMessageHandlers;
+	std::list<OnPublish> _onPublishHandlers;
+	std::list<OnDisconnect> _onDisconnectHandlers;
+	std::list<OnCommand> _mqttCommandsHandlers;
 	void _onConnect(bool sessionPresent);
 	void _onMessage(const char* _topic, const char* _payload);
 	void _onPublish(PacketID packetId);
