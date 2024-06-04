@@ -2,15 +2,22 @@
 
 AsyncMqttClient _clientMqtt;
 Ticker _mqttReconnectTimer;
-
-std::string BasicMqtt::_broker_address = "";
-uint16_t BasicMqtt::_broker_port = DEFAULT_PORT;
-std::string BasicMqtt::_user = "";
-std::string BasicMqtt::_pass = "";
 bool BasicMqtt::_shouldBeConnected = true;
 uint8_t BasicMqtt::_connectionStatus = s_disconnected;
-std::string BasicMqtt::_clientID = "";
-bool BasicMqtt::_cleanSession = true;
+
+BasicMqtt::Config::Config()
+    : broker_port(DEFAULT_PORT)
+    , keepalive(DEFAULT_KEEP_ALIVE)
+    , broker_address("")
+    , user("")
+    , pass("")
+    , clientID("")
+    , topicPrefix("")
+    , command_topic("")
+    , will_topic("")
+    , will_msg(STATUS_OFF_MSG)
+    , cleanSession(true) {
+}
 
 BasicMqtt::BasicMqtt(const char* broker_address)
     : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, "", "") {
@@ -19,59 +26,33 @@ BasicMqtt::BasicMqtt(const char* broker_address, const char* user, const char* p
     : BasicMqtt::BasicMqtt(broker_address, DEFAULT_PORT, user, pass) {
 }
 BasicMqtt::BasicMqtt(const char* broker_address, int broker_port, const char* user, const char* pass)
-    : _keepalive(DEFAULT_KEEP_ALIVE)
-    , _will_msg(STATUS_OFF_MSG)
+    : topicPrefix(_config.topicPrefix)
     , _logger(nullptr) {
-	_broker_address = broker_address;
-	_broker_port = broker_port;
-	_user = user;
-	_pass = pass;
-	_clientID = _generateClientID();
-	topicPrefix = _generateTopicPrefix();
-	_command_topic = _generateCommandTopic();
-	_will_topic = _generateWillTopic();
+	_config.broker_port = broker_port;
+	_config.broker_address = broker_address;
+	_config.user = user;
+	_config.pass = pass;
+	_config.clientID = _generateClientID();
+	_config.topicPrefix = _generateTopicPrefix();
+	_config.command_topic = _generateCommandTopic();
+	_config.will_topic = _generateWillTopic();
 }
 
-void BasicMqtt::setConfig(Config config) {
-	_broker_address = config.broker_address;
-	_broker_port = config.broker_port;
-	_clientID = config.clientID;
-	_cleanSession = config.cleanSession;
-	_keepalive = config.keepalive;
-	_user = config.user;
-	_pass = config.pass;
-	topicPrefix = config.topicPrefix;
-	_command_topic = config.command_topic;
-	_will_topic = config.will_topic;
-	_will_msg = config.will_msg;
-}
-void BasicMqtt::getConfig(Config& config) {
-	config.broker_address = _broker_address;
-	config.broker_port = _broker_port;
-	config.clientID = _clientID;
-	config.cleanSession = _cleanSession;
-	config.keepalive = _keepalive;
-	config.user = _user;
-	config.pass = _pass;
-	config.topicPrefix = topicPrefix;
-	config.command_topic = _command_topic;
-	config.will_topic = _will_topic;
-	config.will_msg = _will_msg;
+void BasicMqtt::setConfig(const Config& config) {
+	_config.broker_address = config.broker_address;
+	_config.broker_port = config.broker_port;
+	_config.clientID = config.clientID;
+	_config.cleanSession = config.cleanSession;
+	_config.keepalive = config.keepalive;
+	_config.user = config.user;
+	_config.pass = config.pass;
+	_config.topicPrefix = config.topicPrefix;
+	_config.command_topic = config.command_topic;
+	_config.will_topic = config.will_topic;
+	_config.will_msg = config.will_msg;
 }
 BasicMqtt::Config BasicMqtt::getConfig() {
-	Config config;
-	config.broker_address = _broker_address;
-	config.broker_port = _broker_port;
-	config.clientID = _clientID;
-	config.cleanSession = _cleanSession;
-	config.keepalive = _keepalive;
-	config.user = _user;
-	config.pass = _pass;
-	config.topicPrefix = topicPrefix;
-	config.command_topic = _command_topic;
-	config.will_topic = _will_topic;
-	config.will_msg = _will_msg;
-	return config;
+	return _config;
 }
 void BasicMqtt::connect() {
 	BasicMqtt::_shouldBeConnected = true;
@@ -200,24 +181,24 @@ void BasicMqtt::addLogger(void (*logger)(String logLevel, String msg)) {
 	_logger = logger;
 }
 void BasicMqtt::setCleanSession(bool cleanSession) {
-	_cleanSession = cleanSession;
+	_config.cleanSession = cleanSession;
 }
 void BasicMqtt::setKeepAlive(uint16_t keepAlive) {
-	_keepalive = keepAlive;
+	_config.keepalive = keepAlive;
 }
 void BasicMqtt::setclientID(const char* clientID) {
-	_clientID = clientID;
-	topicPrefix = _generateTopicPrefix();
-	_command_topic = _generateCommandTopic();
-	_will_topic = _generateWillTopic();
+	_config.clientID = clientID;
+	_config.topicPrefix = _generateTopicPrefix();
+	_config.command_topic = _generateCommandTopic();
+	_config.will_topic = _generateWillTopic();
 }
 void BasicMqtt::setup() {
-	_clientMqtt.setKeepAlive(_keepalive);
-	_clientMqtt.setClientId(_clientID.c_str());
-	_clientMqtt.setCleanSession(_cleanSession);
-	_clientMqtt.setCredentials(_user.c_str(), _pass.c_str());
-	_clientMqtt.setWill(_will_topic.c_str(), QoS2, true, _will_msg.c_str());
-	_clientMqtt.setServer(_broker_address.c_str(), _broker_port);
+	_clientMqtt.setKeepAlive(_config.keepalive);
+	_clientMqtt.setClientId(_config.clientID.c_str());
+	_clientMqtt.setCleanSession(_config.cleanSession);
+	_clientMqtt.setCredentials(_config.user.c_str(), _config.pass.c_str());
+	_clientMqtt.setWill(_config.will_topic.c_str(), QoS2, true, _config.will_msg.c_str());
+	_clientMqtt.setServer(_config.broker_address.c_str(), _config.broker_port);
 	_clientMqtt.onConnect([&](bool sessionPresent) {
 		_onConnect(sessionPresent);
 	});
@@ -260,19 +241,19 @@ bool BasicMqtt::waitForConnection(int waitTime) {
 }
 
 void BasicMqtt::_onConnect(bool sessionPresent) {
-	BASIC_MQTT_PRINTLN((String) "MQTT connected!\n " + _clientID.c_str() + "@" + _broker_address.c_str());
+	BASIC_MQTT_PRINTLN((String) "MQTT connected!\n " + _config.clientID.c_str() + "@" + _config.broker_address.c_str());
 	if (_logger != nullptr) {
-		(*_logger)("mqtt", (String) "MQTT connected [" + _clientID.c_str() + "@" + _broker_address.c_str() + "]");
+		(*_logger)("mqtt", (String) "MQTT connected [" + _config.clientID.c_str() + "@" + _config.broker_address.c_str() + "]");
 	}
 	_connectionStatus = s_connected;
 	_mqttReconnectTimer.detach();
-	_clientMqtt.publish((topicPrefix + "/status").c_str(), QoS0, true, STATUS_ON_MSG);
-	_clientMqtt.subscribe(_command_topic.c_str(), QoS0);
+	_clientMqtt.publish((_config.topicPrefix + "/status").c_str(), QoS0, true, STATUS_ON_MSG);
+	_clientMqtt.subscribe(_config.command_topic.c_str(), QoS0);
 	for (const auto& handler : _onConnectHandlers) handler(sessionPresent);
 }
 void BasicMqtt::_onMessage(const char* topic, const char* payload) {
 	BASIC_MQTT_PRINTF("received message!\n msg.topic:   %s\n msg.payload: %s\n", topic, payload);
-	if (topic == _command_topic) {
+	if (topic == _config.command_topic) {
 		_mqttCommands(payload);
 		return;
 	}
@@ -342,11 +323,11 @@ std::string BasicMqtt::_generateClientID() {
 #endif
 }
 std::string BasicMqtt::_generateTopicPrefix(const char* prefix) {
-	return (std::string) prefix + _clientID;
+	return (std::string)prefix + _config.clientID;
 }
 std::string BasicMqtt::_generateCommandTopic(const char* suffix) {
-	return (std::string)topicPrefix + suffix;
+	return (std::string)_config.topicPrefix + suffix;
 }
 std::string BasicMqtt::_generateWillTopic(const char* suffix) {
-	return (std::string)topicPrefix + suffix;
+	return (std::string)_config.topicPrefix + suffix;
 }

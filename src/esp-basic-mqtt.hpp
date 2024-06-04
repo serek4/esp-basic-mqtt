@@ -48,17 +48,18 @@ class BasicMqtt {
 	typedef std::function<void(AsyncMqttClientDisconnectReason reason)> OnDisconnect;
 	typedef std::function<bool(Command mqttCommand)> OnCommand;
 	struct Config {
-		std::string broker_address;
+		Config();
 		uint16_t broker_port;
-		std::string clientID;
-		bool cleanSession;
 		uint16_t keepalive;
+		std::string broker_address;
 		std::string user;
 		std::string pass;
+		std::string clientID;
 		std::string topicPrefix;
 		std::string command_topic;
 		std::string will_topic;
 		std::string will_msg;
+		bool cleanSession;
 	};
 	enum QoS {
 		QoS0,
@@ -75,10 +76,9 @@ class BasicMqtt {
 	BasicMqtt(const char* broker_address, const char* user, const char* pass);
 	BasicMqtt(const char* broker_address, int broker_port, const char* user, const char* pass);
 
-	std::string topicPrefix;
+	std::string& topicPrefix;
 
-	void setConfig(Config config);
-	void getConfig(Config& config);
+	void setConfig(const Config& config);
 	Config getConfig();
 	void addLogger(void (*logger)(String logLevel, String msg));
 	void setCleanSession(bool cleanSession);
@@ -116,18 +116,10 @@ class BasicMqtt {
 	bool connected();
 
   private:
-	static std::string _broker_address;
-	static uint16_t _broker_port;
-	static std::string _clientID;
-	static bool _cleanSession;
-	uint16_t _keepalive;
-	std::string _will_topic;
-	std::string _will_msg;
-	static std::string _user;
-	static std::string _pass;
+	Config _config;
+
 	static bool _shouldBeConnected;
 	static uint8_t _connectionStatus;
-	std::string _command_topic;
 	void (*_connectingIndicator)(u_long onTime, u_long offTime);
 	void (*_logger)(String logLevel, String msg);
 	std::list<OnConnect> _onConnectHandlers;
