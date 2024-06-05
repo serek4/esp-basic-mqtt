@@ -1,6 +1,6 @@
 #include "esp-basic-mqtt.hpp"
 
-AsyncMqttClient _clientMqtt;
+espMqttClientAsync _clientMqtt;
 Ticker _mqttReconnectTimer;
 bool BasicMqtt::_shouldBeConnected = true;
 uint8_t BasicMqtt::_connectionStatus = s_disconnected;
@@ -202,16 +202,17 @@ void BasicMqtt::setup() {
 	_clientMqtt.onConnect([&](bool sessionPresent) {
 		_onConnect(sessionPresent);
 	});
-	_clientMqtt.onMessage([&](char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-		char buffer[len + 1];
+	_clientMqtt.onMessage([&](const espMqttClientTypes::MessageProperties& properties, const char* topic, const uint8_t* payload, size_t len, size_t index, size_t total) {
+		char* buffer = new char[len + 1];
+		memcpy(buffer, payload, len);
 		buffer[len] = '\0';
-		strncpy(buffer, payload, len);
 		_onMessage(topic, buffer);
+		delete[] buffer;
 	});
 	_clientMqtt.onPublish([&](uint16_t packetId) {
 		_onPublish((PacketID)packetId);
 	});
-	_clientMqtt.onDisconnect([&](AsyncMqttClientDisconnectReason reason) {
+	_clientMqtt.onDisconnect([&](espMqttClientTypes::DisconnectReason reason) {
 		_onDisconnect(reason);
 	});
 }
@@ -263,9 +264,9 @@ void BasicMqtt::_onPublish(PacketID packetId) {
 	BASIC_MQTT_PRINTF("Packet: %i published\n", packetId);
 	for (const auto& handler : _onPublishHandlers) handler(packetId);
 }
-void BasicMqtt::_onDisconnect(AsyncMqttClientDisconnectReason reason) {
-	BASIC_MQTT_PRINTF("MQTT disconnected, reason: %i\n", (uint8_t)reason);
-	if (_logger != nullptr) { (*_logger)("mqtt", "MQTT disconnected: " + String((uint8_t)reason)); }
+void BasicMqtt::_onDisconnect(espMqttClientTypes::DisconnectReason reason) {
+	BASIC_MQTT_PRINTF("MQTT disconnected, reason: %s\n", (String)disconnectReasonToString(reason));
+	if (_logger != nullptr) { (*_logger)("mqtt", "MQTT disconnected: " + (String)disconnectReasonToString(reason)); }
 	_connectionStatus = s_disconnected;
 	if (_shouldBeConnected && !_mqttReconnectTimer.active()) {
 		_mqttReconnectTimer.attach(MQTT_AUTO_RECONNECT_DELAY, []() {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <AsyncMqttClient.h>
+#include <espMqttClientAsync.h>
 #include <Ticker.h>
 #include <functional>
 #include <stdint.h>
@@ -45,7 +45,7 @@ class BasicMqtt {
 	typedef std::function<void(bool sessionPresent)> OnConnect;
 	typedef std::function<void(const char* _topic, const char* _payload)> OnMessage;
 	typedef std::function<void(PacketID packetId)> OnPublish;
-	typedef std::function<void(AsyncMqttClientDisconnectReason reason)> OnDisconnect;
+	typedef std::function<void(espMqttClientTypes::DisconnectReason reason)> OnDisconnect;
 	typedef std::function<bool(Command mqttCommand)> OnCommand;
 	struct Config {
 		Config();
@@ -130,7 +130,7 @@ class BasicMqtt {
 	void _onConnect(bool sessionPresent);
 	void _onMessage(const char* _topic, const char* _payload);
 	void _onPublish(PacketID packetId);
-	void _onDisconnect(AsyncMqttClientDisconnectReason reason);
+	void _onDisconnect(espMqttClientTypes::DisconnectReason reason);
 	bool _mqttCommands(const char* command);
 	std::string _generateClientID();
 	std::string _generateTopicPrefix(const char* prefix = DEFAULT_TOPIC_PREFIX);
