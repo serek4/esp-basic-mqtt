@@ -1,4 +1,5 @@
 #include "esp-basic-mqtt.hpp"
+#include "templates.hpp"
 
 espMqttClientAsync _clientMqtt;
 Ticker _mqttReconnectTimer;
@@ -107,63 +108,14 @@ PacketID BasicMqtt::publish(const char* topic, String payload, uint8_t qos, bool
 	}
 	return (PacketID)0;
 }
-PacketID BasicMqtt::publish(const char* topic, int32_t payload, uint8_t qos, bool retain) {
+template <typename Number>
+PacketID BasicMqtt::publish(const char* topic, Number payload, uint8_t qos, bool retain) {
 	if (_connectionStatus == s_connected) {
-		char numberBuffer[12];
-		itoa(payload, numberBuffer, 10);
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
+		return _clientMqtt.publish(topic, qos, retain, String(payload).c_str());
 	}
 	return (PacketID)0;
 }
-PacketID BasicMqtt::publish(const char* topic, long payload, uint8_t qos, bool retain) {
-	if (_connectionStatus == s_connected) {
-		char numberBuffer[12];
-		ltoa(payload, numberBuffer, 10);
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
-	}
-	return (PacketID)0;
-}
-PacketID BasicMqtt::publish(const char* topic, uint32_t payload, uint8_t qos, bool retain) {
-	if (_connectionStatus == s_connected) {
-		char numberBuffer[12];
-		utoa(payload, numberBuffer, 10);
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
-	}
-	return (PacketID)0;
-}
-PacketID BasicMqtt::publish(const char* topic, u_long payload, uint8_t qos, bool retain) {
-	if (_connectionStatus == s_connected) {
-		char numberBuffer[12];
-		ultoa(payload, numberBuffer, 10);
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
-	}
-	return (PacketID)0;
-}
-PacketID BasicMqtt::publish(const char* topic, int64_t payload, uint8_t qos, bool retain) {
-	if (_connectionStatus == s_connected) {
-		char numberBuffer[21];
-#ifdef ARDUINO_ARCH_ESP32
-		lltoa(payload, numberBuffer, 10);
-#elif defined(ARDUINO_ARCH_ESP8266)
-		lltoa(payload, numberBuffer, sizeof(numberBuffer), 10);
-#endif
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
-	}
-	return (PacketID)0;
-}
-PacketID BasicMqtt::publish(const char* topic, uint64_t payload, uint8_t qos, bool retain) {
-	if (_connectionStatus == s_connected) {
-		char numberBuffer[21];
-#ifdef ARDUINO_ARCH_ESP32
-		ulltoa(payload, numberBuffer, 10);
-#elif defined(ARDUINO_ARCH_ESP8266)
-		ulltoa(payload, numberBuffer, sizeof(numberBuffer), 10);
-#endif
-		return _clientMqtt.publish(topic, qos, retain, numberBuffer);
-	}
-	return (PacketID)0;
-}
-PacketID BasicMqtt::publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos, bool retain) {
+PacketID BasicMqtt::publish(const char* topic, float payload, int8_t width, uint8_t prec, uint8_t qos, bool retain) {
 	if (_connectionStatus == s_connected) {
 		char numberBuffer[21];
 		dtostrf(payload, width, prec, numberBuffer);

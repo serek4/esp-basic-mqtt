@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Arduino.h>
-#include <espMqttClientAsync.h>
 #include <Ticker.h>
+#include <espMqttClientAsync.h>
 #include <functional>
+#include <list>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <list>
 
 // #define BASIC_MQTT_DEBUG
 // debug printing macros
@@ -92,24 +92,17 @@ class BasicMqtt {
 	void onPublish(const OnPublish& handler);
 	void onDisconnect(const OnDisconnect& handler);
 	void commands(const OnCommand& handler);
-	// clang-format off
 	PacketID publish(const char* topic, const char* payload, uint8_t qos = QoS0, bool retain = false);
 	PacketID publish(const char* topic, std::string payload, uint8_t qos = QoS0, bool retain = false);
 	PacketID publish(const char* topic, String payload, uint8_t qos = QoS0, bool retain = false);
-	PacketID publish(const char* topic, int8_t payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, (int32_t)payload, qos, retain); };
-	PacketID publish(const char* topic, int16_t payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, (int32_t)payload, qos, retain); };
-	PacketID publish(const char* topic, int32_t payload, uint8_t qos = QoS0, bool retain = false);    // int
-	PacketID publish(const char* topic, long payload, uint8_t qos = QoS0, bool retain = false);
-	PacketID publish(const char* topic, int64_t payload, uint8_t qos = QoS0, bool retain = false);
-	PacketID publish(const char* topic, uint8_t payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, (uint32_t)payload, qos, retain); };
-	PacketID publish(const char* topic, uint16_t payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, (uint32_t)payload, qos, retain); };
-	PacketID publish(const char* topic, uint32_t payload, uint8_t qos = QoS0, bool retain = false);
-	PacketID publish(const char* topic, u_long payload, uint8_t qos = QoS0, bool retain = false);
-	PacketID publish(const char* topic, uint64_t payload, uint8_t qos = QoS0, bool retain = false);
+	template <typename Number>
+	PacketID publish(const char* topic, Number payload, uint8_t qos = QoS0, bool retain = false);
+	// clang-format off
 	PacketID publish(const char* topic, float payload, uint8_t qos = QoS0, bool retain = false) { return publish(topic, payload, 3, 2, qos, retain); };
-	PacketID publish(const char* topic, float payload, signed char width, unsigned char prec, uint8_t qos = QoS0, bool retain = false);
-	PacketID subscribe(const char* topic, uint8_t qos = QoS0);
+	PacketID publish(const char* topic, float payload, uint8_t prec, uint8_t qos = QoS0, bool retain = false) { return publish(topic, payload, 3, prec, qos, retain); };
+	PacketID publish(const char* topic, float payload, int8_t width, uint8_t prec, uint8_t qos = QoS0, bool retain = false);
 	// clang-format on
+	PacketID subscribe(const char* topic, uint8_t qos = QoS0);
 	static void connect();
 	static void reconnect();
 	static void disconnect();

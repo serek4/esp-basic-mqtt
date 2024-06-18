@@ -34,6 +34,45 @@ void loop() {
 	if (millis() - loopDelay >= 60000) {
 		loopDelay = millis();
 		mqtt.publish((mqtt.topicPrefix + "/loop").c_str(), millis(), BasicMqtt::QoS1);
+
+		int intTest = INT32_MIN;
+		long longTest = INT32_MIN;
+		long long longLongTest = INT64_MIN;
+		int8_t int8Test = INT8_MIN;
+		int16_t int16Test = INT16_MIN;
+		int32_t int32Test = INT32_MIN;
+		int64_t int64Test = INT64_MIN;
+
+		unsigned int unsignedIntTest = UINT32_MAX;
+		unsigned long unsignedLongTest = UINT32_MAX;
+		unsigned long long unsignedLonglongTest = UINT64_MAX;
+		uint8_t uint8Test = UINT8_MAX;
+		uint16_t uint16Test = UINT16_MAX;
+		uint32_t uint32Test = UINT32_MAX;
+		uint64_t uint64Test = UINT64_MAX;
+		u_long ulongTest = UINT32_MAX;
+
+		float floatTest = 2.0 / 3.0;
+
+
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), intTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), longTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), longLongTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), int8Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), int16Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), int32Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), int64Test);
+
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), unsignedIntTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), unsignedLongTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), unsignedLonglongTest);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), uint8Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), uint16Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), uint32Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), uint64Test);
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), ulongTest);
+
+		mqtt.publish((mqtt.topicPrefix + "/test").c_str(), floatTest);
 	}
 }
 
