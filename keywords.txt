@@ -8,13 +8,16 @@
 #######################################
 
 BasicMqtt   KEYWORD1
-onConnect   KEYWORD1
-OnError   KEYWORD1
-OnMessage   KEYWORD1
-OnDisconnect   KEYWORD1
-MqttCommands   KEYWORD1
+PacketID   KEYWORD1
 Command   KEYWORD1
+onConnect   KEYWORD1
+OnMessage   KEYWORD1
+OnPublish   KEYWORD1
+OnDisconnect   KEYWORD1
+OnCommand   KEYWORD1
 Config   KEYWORD1
+QoS   KEYWORD1
+ConnectionStatus   KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -23,12 +26,15 @@ Config   KEYWORD1
 setConfig  KEYWORD2
 getConfig  KEYWORD2
 addLogger  KEYWORD2
+setCleanSession  KEYWORD2
+setKeepAlive  KEYWORD2
+setclientID  KEYWORD2
 setup  KEYWORD2
 setWaitingFunction  KEYWORD2
 waitForConnection   KEYWORD2
 onConnect   KEYWORD2
-onPublish   KEYWORD2
 onMessage   KEYWORD2
+onPublish   KEYWORD2
 onDisconnect   KEYWORD2
 commands   KEYWORD2
 publish   KEYWORD2

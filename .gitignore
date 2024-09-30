@@ -1,2 +1,4 @@
 # VS code setings
 .vscode/
+flash-*.sh
+.directory

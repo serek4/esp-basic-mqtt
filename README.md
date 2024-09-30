@@ -6,7 +6,7 @@ This library is part of [framework](https://github.com/serek4/esp-basic-framewor
 
 - Patched version of [ESPAsyncTCP.h - v1.2.2-2](https://github.com/serek4/ESPAsyncTCP/tree/v1.2.2-2)  
 
-### [esp32 Arduino core - 2.0.17](https://github.com/espressif/arduino-esp32/tree/2.0.17)
+### [esp32 Arduino core - 3.0.5](https://github.com/espressif/arduino-esp32/tree/3.0.5)
 
 - Patched version of [AsyncTCP.h - v1.1.1-1](https://github.com/serek4/AsyncTCP/tree/v1.1.1-1)  
 
