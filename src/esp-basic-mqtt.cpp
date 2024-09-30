@@ -57,10 +57,8 @@ BasicMqtt::Config BasicMqtt::getConfig() {
 }
 void BasicMqtt::connect() {
 	BasicMqtt::_shouldBeConnected = true;
-	if (_connectionStatus == s_disconnected) {
-		_clientMqtt.connect();
-		_connectionStatus = s_connecting;
-	}
+	_clientMqtt.connect();
+	_connectionStatus = s_connecting;
 }
 void BasicMqtt::reconnect() {
 	if (_connectionStatus != s_disconnected) { disconnect(); }
